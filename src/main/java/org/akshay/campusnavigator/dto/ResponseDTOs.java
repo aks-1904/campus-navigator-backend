@@ -1,6 +1,73 @@
 package org.akshay.campusnavigator.dto;
 
+import org.akshay.campusnavigator.enums.EdgeType;
+import org.akshay.campusnavigator.enums.NodeType;
+import org.antlr.v4.runtime.misc.NotNull;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
 public class ResponseDTOs {
+
+    private class CoordinateDTO {
+
+        private final Double latitude;
+        private final Double longitude;
+        private final Double altitude;
+
+        public CoordinateDTO(Double latitude, Double longitude, Double altitude) {
+            this.latitude = Objects.requireNonNull(latitude, "Latitude cannot be null");
+            this.longitude = Objects.requireNonNull(longitude, "Longitude cannot be null");
+            this.altitude = altitude;
+        }
+
+        public Double getLatitude() {
+            return latitude;
+        }
+
+        public Double getLongitude() {
+            return longitude;
+        }
+
+        public Double getAltitude() {
+            return altitude;
+        }
+    }
+
+    public static class NodeResponse {
+
+        private Long id;
+        private String name;
+        private NodeType nodeType;
+        private Double latitude;
+        private Double longitude;
+        private Integer floor;
+        private Long parentNodeId; // null if top-level node
+        private String parentNodeName;
+        private String description;
+        private String extraInfo;
+        private boolean isAccessible;
+        private boolean active;
+        private List<NodeResponse> childNodes; // entrances etc.
+        private LocalDateTime createdAt;
+
+    }
+
+    public static class EdgeResponse {
+        private Long id;
+        private Long sourceNodeId;
+        private String sourceNodeName;
+        private Long targetNodeId;
+        private String targetNodeName;
+        private Double distance; // In meters
+        private EdgeType edgeType;
+        private boolean isBidirectional;
+        private boolean isAccessible;
+        private boolean active;
+        private int waypointCount;
+        private List<CoordinateDTO> waypoints;
+    }
 
     public static class ApiResponse<T> {
 
