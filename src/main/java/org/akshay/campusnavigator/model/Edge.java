@@ -19,11 +19,11 @@ public class Edge {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "source_node_id", nullable = false)
-    private Long sourceNode;
+    @JoinColumn(name = "source_node_id", nullable = false)
+    private Node sourceNode;
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "destination_node_id", nullable = false)
-    private Long destinationNode;
+    @JoinColumn(name = "destination_node_id", nullable = false)
+    private Node destinationNode;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "edge_type", nullable = false)
@@ -69,19 +69,19 @@ public class Edge {
         this.id = id;
     }
 
-    public Long getSourceNode() {
+    public Node getSourceNode() {
         return sourceNode;
     }
 
-    public void setSourceNode(Long sourceNode) {
+    public void setSourceNode(Node sourceNode) {
         this.sourceNode = sourceNode;
     }
 
-    public Long getDestinationNode() {
+    public Node getDestinationNode() {
         return destinationNode;
     }
 
-    public void setDestinationNode(Long destinationNode) {
+    public void setDestinationNode(Node destinationNode) {
         this.destinationNode = destinationNode;
     }
 
@@ -150,8 +150,8 @@ public class Edge {
     }
 
     public Edge(Long id,
-                Long sourceNode,
-                Long destinationNode,
+                Node sourceNode,
+                Node destinationNode,
                 EdgeType edgeType,
                 Double distance,
                 Boolean isAccessible,

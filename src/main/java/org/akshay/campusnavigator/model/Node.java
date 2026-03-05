@@ -53,7 +53,7 @@ public class Node {
 
     @OneToMany(mappedBy = "sourceNode", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> outgoingEdges = new ArrayList<>();
-    @OneToMany(mappedBy = "targetNode", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "destinationNode", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> incomingEdges = new ArrayList<>();
 
     public Node() {
