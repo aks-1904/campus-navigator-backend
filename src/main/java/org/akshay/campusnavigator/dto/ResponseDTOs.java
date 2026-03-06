@@ -52,6 +52,117 @@ public class ResponseDTOs {
         private List<NodeResponse> childNodes; // entrances etc.
         private LocalDateTime createdAt;
 
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setNodeType(NodeType nodeType) {
+            this.nodeType = nodeType;
+        }
+
+        public void setLatitude(Double latitude) {
+            this.latitude = latitude;
+        }
+
+        public void setLongitude(Double longitude) {
+            this.longitude = longitude;
+        }
+
+        public void setFloor(Integer floor) {
+            this.floor = floor;
+        }
+
+        public void setParentNodeId(Long parentNodeId) {
+            this.parentNodeId = parentNodeId;
+        }
+
+        public void setParentNodeName(String parentNodeName) {
+            this.parentNodeName = parentNodeName;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public void setExtraInfo(String extraInfo) {
+            this.extraInfo = extraInfo;
+        }
+
+        public void setAccessible(boolean accessible) {
+            isAccessible = accessible;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public void setChildNodes(List<NodeResponse> childNodes) {
+            this.childNodes = childNodes;
+        }
+
+        public void setCreatedAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public NodeType getNodeType() {
+            return nodeType;
+        }
+
+        public Double getLatitude() {
+            return latitude;
+        }
+
+        public Double getLongitude() {
+            return longitude;
+        }
+
+        public Integer getFloor() {
+            return floor;
+        }
+
+        public Long getParentNodeId() {
+            return parentNodeId;
+        }
+
+        public String getParentNodeName() {
+            return parentNodeName;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getExtraInfo() {
+            return extraInfo;
+        }
+
+        public boolean isAccessible() {
+            return isAccessible;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public List<NodeResponse> getChildNodes() {
+            return childNodes;
+        }
+
+        public LocalDateTime getCreatedAt() {
+            return createdAt;
+        }
     }
 
     public static class EdgeResponse {
