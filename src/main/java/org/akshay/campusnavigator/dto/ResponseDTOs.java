@@ -2,38 +2,12 @@ package org.akshay.campusnavigator.dto;
 
 import org.akshay.campusnavigator.enums.EdgeType;
 import org.akshay.campusnavigator.enums.NodeType;
-import org.antlr.v4.runtime.misc.NotNull;
+import org.akshay.campusnavigator.model.PathWaypoint;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 public class ResponseDTOs {
-
-    private class CoordinateDTO {
-
-        private final Double latitude;
-        private final Double longitude;
-        private final Double altitude;
-
-        public CoordinateDTO(Double latitude, Double longitude, Double altitude) {
-            this.latitude = Objects.requireNonNull(latitude, "Latitude cannot be null");
-            this.longitude = Objects.requireNonNull(longitude, "Longitude cannot be null");
-            this.altitude = altitude;
-        }
-
-        public Double getLatitude() {
-            return latitude;
-        }
-
-        public Double getLongitude() {
-            return longitude;
-        }
-
-        public Double getAltitude() {
-            return altitude;
-        }
-    }
 
     public static class NodeResponse {
 
@@ -177,7 +151,103 @@ public class ResponseDTOs {
         private boolean isAccessible;
         private boolean active;
         private int waypointCount;
-        private List<CoordinateDTO> waypoints;
+        private List<PathWaypointDTO> waypoints;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Long getSourceNodeId() {
+            return sourceNodeId;
+        }
+
+        public void setSourceNodeId(Long sourceNodeId) {
+            this.sourceNodeId = sourceNodeId;
+        }
+
+        public String getSourceNodeName() {
+            return sourceNodeName;
+        }
+
+        public void setSourceNodeName(String sourceNodeName) {
+            this.sourceNodeName = sourceNodeName;
+        }
+
+        public Long getTargetNodeId() {
+            return targetNodeId;
+        }
+
+        public void setTargetNodeId(Long targetNodeId) {
+            this.targetNodeId = targetNodeId;
+        }
+
+        public String getTargetNodeName() {
+            return targetNodeName;
+        }
+
+        public void setTargetNodeName(String targetNodeName) {
+            this.targetNodeName = targetNodeName;
+        }
+
+        public Double getDistance() {
+            return distance;
+        }
+
+        public void setDistance(Double distance) {
+            this.distance = distance;
+        }
+
+        public EdgeType getEdgeType() {
+            return edgeType;
+        }
+
+        public void setEdgeType(EdgeType edgeType) {
+            this.edgeType = edgeType;
+        }
+
+        public boolean isBidirectional() {
+            return isBidirectional;
+        }
+
+        public void setBidirectional(boolean bidirectional) {
+            isBidirectional = bidirectional;
+        }
+
+        public boolean isAccessible() {
+            return isAccessible;
+        }
+
+        public void setAccessible(boolean accessible) {
+            isAccessible = accessible;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public int getWaypointCount() {
+            return waypointCount;
+        }
+
+        public void setWaypointCount(int waypointCount) {
+            this.waypointCount = waypointCount;
+        }
+
+        public List<PathWaypointDTO> getWaypoints() {
+            return waypoints;
+        }
+
+        public void setWaypoints(List<PathWaypointDTO> waypoints) {
+            this.waypoints = waypoints;
+        }
     }
 
     public static class ApiResponse<T> {

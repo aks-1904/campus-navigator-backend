@@ -34,6 +34,8 @@ public class Edge {
 
     @Column(name = "is_accessible")
     private Boolean isAccessible = true;
+    @Column(name = "is_bidirectional")
+    private Boolean isBidirectional = true;
 
     private Boolean active = true;
 
@@ -147,6 +149,14 @@ public class Edge {
 
     public void setWaypoints(List<PathWaypoint> waypoints) {
         this.waypoints = waypoints;
+    }
+
+    public Boolean getBidirectional() {
+        return isBidirectional;
+    }
+
+    public void setBidirectional(Boolean bidirectional) {
+        isBidirectional = bidirectional;
     }
 
     public Edge(Long id,
