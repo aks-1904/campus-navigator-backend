@@ -74,6 +74,14 @@ public class EdgeService {
 
     }
 
+    public EdgeResponse getEdgeById(Long id) {
+        Edge edge = edgeRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Edge not found " + id));
+
+        return toResponse(edge, true);
+    }
+
     private EdgeResponse toResponse(Edge edge, boolean includeWaypoints) {
 
         List<PathWaypointDTO> waypoints = null;

@@ -1,7 +1,7 @@
 package org.akshay.campusnavigator.dto;
 
 import org.akshay.campusnavigator.enums.EdgeType;
-import org.antlr.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class EdgeRequestDTO {
 
     private Boolean isAccessible = true;
     private Boolean isBidirectional = true;
-    private Boolean active;
+    private Boolean active = true;
 
     private String description;
 

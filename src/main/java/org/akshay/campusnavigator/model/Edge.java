@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "edges", indexes = {
         @Index(name = "idx_edge_source", columnList = "source_node_id"),
-        @Index(name = "idx_edge_destination", columnList = "target_node_id"),
+        @Index(name = "idx_edge_destination", columnList = "destination_node_id"),
 })
 public class Edge {
 

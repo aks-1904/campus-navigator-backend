@@ -6,10 +6,7 @@ import org.akshay.campusnavigator.dto.ResponseDTOs;
 import org.akshay.campusnavigator.service.EdgeService;
 import org.akshay.campusnavigator.service.NodeService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -36,6 +33,19 @@ public class AdminController {
         );
     }
 
+    @GetMapping("/node/{id}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    ResponseDTOs.NodeResponse
+                    >
+            > getNodeById(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, nodeService.getNodeById(id)
+                )
+        );
+    }
+
     @PostMapping("/edge")
     public ResponseEntity<
             ResponseDTOs.ApiResponse<
@@ -45,6 +55,19 @@ public class AdminController {
         return ResponseEntity.ok(
                 ResponseDTOs.ApiResponse.ok(
                         "Edge created successfully", edgeService.createEdge(edge)
+                )
+        );
+    }
+
+    @GetMapping("/edge/{id}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    ResponseDTOs.EdgeResponse
+                    >
+            > getEdgeById(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, edgeService.getEdgeById(id)
                 )
         );
     }

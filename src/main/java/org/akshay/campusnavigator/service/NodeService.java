@@ -51,10 +51,18 @@ public class NodeService {
         return toResponse(node, true);
     }
 
+    public NodeResponse getNodeById(Long id) {
+        Node node = nodeRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Node not found for given ID" + id));
+
+        return toResponse(node, true);
+    }
+
     private NodeResponse toResponse(Node node, boolean includeChildren) {
 
         List<NodeResponse> children = null;
-        if(includeChildren && !node.getChildNodes().isEmpty()) {
+        if (includeChildren && !node.getChildNodes().isEmpty()) {
             children = node
                     .getChildNodes()
                     .stream()

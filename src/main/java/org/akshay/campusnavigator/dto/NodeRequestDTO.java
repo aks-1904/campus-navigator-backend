@@ -1,7 +1,7 @@
 package org.akshay.campusnavigator.dto;
 
 import org.akshay.campusnavigator.enums.NodeType;
-import org.antlr.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class NodeRequestDTO {
 
