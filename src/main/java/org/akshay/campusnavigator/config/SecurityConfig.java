@@ -43,11 +43,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // --- 1. CORS CONFIGURATION ---
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // React App
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
@@ -57,14 +56,11 @@ public class SecurityConfig {
         return source;
     }
 
-    // --- 2. RATE LIMITING FILTER ---
     private static class RateLimitingFilter extends OncePerRequestFilter {
 
-        // Cache to store buckets per IP address
         private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
 
         private Bucket createNewBucket() {
-            // Define limit: 20 requests per minute
             Refill refill = Refill.intervally(20, Duration.ofMinutes(1));
             Bandwidth limit = Bandwidth.classic(20, refill);
             return Bucket.builder().addLimit(limit).build();
@@ -75,7 +71,6 @@ public class SecurityConfig {
                 HttpServletResponse response,
                 FilterChain filterChain) throws ServletException, IOException {
 
-            // Get client IP to limit per-user rather than global
             String ip = request.getRemoteAddr();
             Bucket requestBucket = buckets.computeIfAbsent(ip, k -> createNewBucket());
 
