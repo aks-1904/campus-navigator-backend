@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EdgeService {
@@ -117,5 +118,17 @@ public class EdgeService {
         edgeResponse.setWaypointCount(edge.getWaypoints().size());
         edgeResponse.setWaypoints(waypoints);
         return edgeResponse;
+    }
+
+    public List<EdgeResponse> getAllEdges() {
+        List<Edge> edges = edgeRepository.findAll();
+        List<EdgeResponse> edgesData;
+
+        edgesData = edges
+                .stream()
+                .map(e -> toResponse(e, true))
+                .collect(Collectors.toList());
+
+        return edgesData;
     }
 }

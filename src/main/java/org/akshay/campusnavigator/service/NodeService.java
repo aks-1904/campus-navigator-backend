@@ -90,4 +90,15 @@ public class NodeService {
 
     }
 
+    public List<NodeResponse> getAllNodes() {
+        List<Node> nodes = nodeRepository.findAll();
+        List<NodeResponse> nodesData;
+
+        nodesData = nodes
+                .stream()
+                .map(c -> toResponse(c, false))
+                .collect(Collectors.toList());
+
+        return nodesData;
+    }
 }

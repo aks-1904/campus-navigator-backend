@@ -8,6 +8,8 @@ import org.akshay.campusnavigator.service.NodeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminController {
@@ -29,6 +31,19 @@ public class AdminController {
         return ResponseEntity.ok(
                 ResponseDTOs.ApiResponse.ok(
                         "Node created successfully", nodeService.createNode(node)
+                )
+        );
+    }
+
+    @GetMapping("/nodes")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    List<ResponseDTOs.NodeResponse>
+                    >
+            > getAllNodes() {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, nodeService.getAllNodes()
                 )
         );
     }
@@ -55,6 +70,19 @@ public class AdminController {
         return ResponseEntity.ok(
                 ResponseDTOs.ApiResponse.ok(
                         "Edge created successfully", edgeService.createEdge(edge)
+                )
+        );
+    }
+
+    @GetMapping("/edges")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    List<ResponseDTOs.EdgeResponse>
+                    >
+            > getAllEdges() {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, edgeService.getAllEdges()
                 )
         );
     }
