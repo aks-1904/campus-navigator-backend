@@ -22,6 +22,12 @@ public class AdminController {
         this.edgeService = edgeService;
     }
 
+    // For fake work load, so that server will not fo to sleep
+    @GetMapping("/ping")
+    public String ping() {
+        return "alive";
+    }
+
     @PostMapping("/node")
     public ResponseEntity<
             ResponseDTOs.ApiResponse<
