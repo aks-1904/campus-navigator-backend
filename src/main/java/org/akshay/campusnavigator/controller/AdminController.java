@@ -3,6 +3,7 @@ package org.akshay.campusnavigator.controller;
 import org.akshay.campusnavigator.dto.EdgeRequestDTO;
 import org.akshay.campusnavigator.dto.NodeRequestDTO;
 import org.akshay.campusnavigator.dto.ResponseDTOs;
+import org.akshay.campusnavigator.enums.NodeType;
 import org.akshay.campusnavigator.service.EdgeService;
 import org.akshay.campusnavigator.service.NodeService;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AdminController {
         this.edgeService = edgeService;
     }
 
-    // For fake work load, so that server will not fo to sleep
+    // For fake work load, so that server will not go to sleep
     @GetMapping("/ping")
     public String ping() {
         return "alive";
@@ -41,7 +42,7 @@ public class AdminController {
         );
     }
 
-    @GetMapping("/nodes")
+    @GetMapping("/node")
     public ResponseEntity<
             ResponseDTOs.ApiResponse<
                     List<ResponseDTOs.NodeResponse>
@@ -67,6 +68,45 @@ public class AdminController {
         );
     }
 
+    @GetMapping("/node/type/{type}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    List<ResponseDTOs.NodeResponse>
+                    >
+            > getNodeByType(@PathVariable NodeType type) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, nodeService.getNodesByType(type)
+                )
+        );
+    }
+
+    @GetMapping("/node/entrance/{id}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    List<ResponseDTOs.NodeResponse>
+                    >
+            > getEntrancesByNodeId(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, nodeService.getEntrances(id)
+                )
+        );
+    }
+
+    @PutMapping("/node/{id}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    ResponseDTOs.NodeResponse
+                    >
+            > updateNode(@PathVariable Long id, @RequestBody NodeRequestDTO node) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, nodeService.updateNode(id, node)
+                )
+        );
+    }
+
     @PostMapping("/edge")
     public ResponseEntity<
             ResponseDTOs.ApiResponse<
@@ -80,7 +120,7 @@ public class AdminController {
         );
     }
 
-    @GetMapping("/edges")
+    @GetMapping("/edge")
     public ResponseEntity<
             ResponseDTOs.ApiResponse<
                     List<ResponseDTOs.EdgeResponse>
