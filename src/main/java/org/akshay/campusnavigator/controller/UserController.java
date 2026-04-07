@@ -76,4 +76,17 @@ public class UserController {
         );
     }
 
+    @GetMapping("/graph/all/shortest-path/{sourceNodeId}/{destinationNodeId}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    List<ResponseDTOs.EdgeResponse>
+                    >
+            > getAllShortestPath(@PathVariable Long sourceNodeId, @PathVariable Long destinationNodeId){
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        null, graphService.getAllShortestPath(sourceNodeId,destinationNodeId)
+                )
+        );
+    }
+
 }

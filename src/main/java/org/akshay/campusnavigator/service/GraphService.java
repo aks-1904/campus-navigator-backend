@@ -55,7 +55,7 @@ public class GraphService {
     @Transactional(readOnly = true)
     private Graph createGraph(List<Edge> edges) {
         Graph graph = new Graph(edges.size() + 1);
-        for(Edge e: edges) {
+        for (Edge e : edges) {
             graph.addEdge(e.getSourceNode().getId(),
                     e.getDestinationNode().getId(),
                     e.getDistance(),
@@ -63,5 +63,10 @@ public class GraphService {
         }
 
         return graph;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseDTOs.EdgeResponse> getAllShortestPath(Long sourceNodeId, Long destinationNodeId) {
+        return null; //to be implemented later.
     }
 }
