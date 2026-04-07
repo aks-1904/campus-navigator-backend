@@ -1,6 +1,7 @@
 package org.akshay.campusnavigator.service;
 
 import org.akshay.campusnavigator.dto.ResponseDTOs;
+import org.akshay.campusnavigator.graph.Algorithm;
 import org.akshay.campusnavigator.graph.Graph;
 import org.akshay.campusnavigator.model.Edge;
 import org.akshay.campusnavigator.repository.EdgeRepository;
@@ -8,6 +9,7 @@ import org.akshay.campusnavigator.repository.NodeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +51,28 @@ public class GraphService {
 
     @Transactional(readOnly = true)
     public List<ResponseDTOs.EdgeResponse> getShortestPath(Long sourceNodeId, Long destinationNodeId) {
+        List<Edge> edges = edgeRepository.findAll();
+        Graph graph = createGraph(edges);
+
+        List<Integer> shortestPath = Algorithm.Dijkstra.shortestPath(graph, sourceNodeId.intValue(), destinationNodeId.intValue());
+        List<Edge> edgesData = new ArrayList<>();
+
+        for (Integer i : shortestPath) {
+            edgesData.add(
+                    edgeRepository
+                            .findById(i.longValue())
+                            .orElseThrow(() -> new IllegalArgumentException("Edge not found with ID " + i))
+            );
+        }
+
+        return edgesData
+                .stream()
+                .map(e -> edgeService.toResponse(e, false))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ResponseDTOs.EdgeResponse> getAllShortestPath(Long sourceNodeId, Long destinationNodeId) {
         return null; //to be implemented later.
     }
 
@@ -65,8 +89,4 @@ public class GraphService {
         return graph;
     }
 
-    @Transactional(readOnly = true)
-    public List<ResponseDTOs.EdgeResponse> getAllShortestPath(Long sourceNodeId, Long destinationNodeId) {
-        return null; //to be implemented later.
-    }
 }
