@@ -75,8 +75,132 @@ public class Algorithm {
         }
     }
 
-    public static class FLoydWarshall {
+    public static class FloydWarshall {
 
+        private static final double INF = Double.MAX_VALUE;
+
+        public static Map<Integer, Map<Integer, List<Integer>>> shortestPaths(Graph graph) {
+
+            int V = graph.vertices;
+
+            double[][] dist = new double[V][V];
+            int[][] next = new int[V][V];
+
+            // Initialize matrices
+            for (int i = 0; i < V; ++i) {
+                for (int j = 0; j < V; ++j) {
+
+                    if (i == j)
+                        dist[i][j] = 0;
+                    else
+                        dist[i][j] = INF;
+
+                    next[i][j] = -1;
+                }
+            }
+
+            // Convert adjacency list -> matrix
+            for (int i = 0; i < V; ++i) {
+
+                AdjacencyListNode node = graph.getNeighbours(i);
+
+                while (node != null) {
+
+                    int v = node.destinationNode.intValue();
+                    double weight = node.distance;
+
+                    dist[i][v] = weight;
+                    next[i][v] = v;
+
+                    node = node.next;
+                }
+            }
+
+            // Floyd Warshall core
+            for (int k = 0; k < V; ++k) {
+                for (int i = 0; i < V; ++i) {
+                    for (int j = 0; j < V; ++j) {
+
+                        if (dist[i][k] == INF || dist[k][j] == INF)
+                            continue;
+
+                        if (dist[i][k] + dist[k][j] < dist[i][j]) {
+
+                            dist[i][j] = dist[i][k] + dist[k][j];
+                            next[i][j] = next[i][k];
+                        }
+                    }
+                }
+            }
+
+            // Build all paths
+            Map<Integer, Map<Integer, List<Integer>>> allPaths = new HashMap<>();
+
+            for (int i = 0; i < V; i++) {
+
+                Map<Integer, List<Integer>> destinationPaths = new HashMap<>();
+
+                for (int j = 0; j < V; j++) {
+
+                    if (i == j)
+                        continue;
+
+                    List<Integer> path = reconstructPath(i, j, next);
+
+                    if (!path.isEmpty()) {
+                        destinationPaths.put(j, path);
+                    }
+                }
+
+                allPaths.put(i, destinationPaths);
+            }
+
+            return allPaths;
+        }
+
+
+        private static List<Integer> reconstructPath(int source, int destination, int[][] next) {
+
+            if (next[source][destination] == -1)
+                return new ArrayList<>();
+
+            List<Integer> path = new ArrayList<>();
+            path.add(source);
+
+            while (source != destination) {
+
+                source = next[source][destination];
+                path.add(source);
+            }
+
+            return path;
+        }
+    }
+
+    public static List<Integer> reconstructPath(int source, int destination, Result result) {
+        if (result.next[source][destination] == -1) {
+            return new ArrayList<>();
+        }
+
+        List<Integer> path = new ArrayList<>();
+        path.add(source);
+
+        while (source != destination) {
+            source = result.next[source][destination];
+            path.add(source);
+        }
+
+        return path;
+    }
+
+    public static class Result {
+        public double[][] dist;
+        public int[][] next;
+
+        public Result(double[][] dist, int[][] next) {
+            this.dist = dist;
+            this.next = next;
+        }
     }
 
     public static class BFS {

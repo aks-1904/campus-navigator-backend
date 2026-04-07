@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,18 +53,29 @@ public class GraphService {
 
     @Transactional(readOnly = true)
     public List<ResponseDTOs.EdgeResponse> getShortestPath(Long sourceNodeId, Long destinationNodeId) {
+
         List<Edge> edges = edgeRepository.findAll();
         Graph graph = createGraph(edges);
 
-        List<Integer> shortestPath = Algorithm.Dijkstra.shortestPath(graph, sourceNodeId.intValue(), destinationNodeId.intValue());
+        List<Integer> nodePath =
+                Algorithm.Dijkstra.shortestPath(graph, sourceNodeId.intValue(), destinationNodeId.intValue());
+
+        if (nodePath.size() < 2)
+            return new ArrayList<>();
+
         List<Edge> edgesData = new ArrayList<>();
 
-        for (Integer i : shortestPath) {
-            edgesData.add(
-                    edgeRepository
-                            .findById(i.longValue())
-                            .orElseThrow(() -> new IllegalArgumentException("Edge not found with ID " + i))
-            );
+        for (int i = 0; i < nodePath.size() - 1; i++) {
+
+            long u = nodePath.get(i);
+            long v = nodePath.get(i + 1);
+
+            Edge edge = edgeRepository
+                    .findBySourceNodeIdAndDestinationNodeId(u, v)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Edge not found between " + u + " and " + v));
+
+            edgesData.add(edge);
         }
 
         return edgesData
@@ -73,7 +86,40 @@ public class GraphService {
 
     @Transactional(readOnly = true)
     public List<ResponseDTOs.EdgeResponse> getAllShortestPath(Long sourceNodeId, Long destinationNodeId) {
-        return null; //to be implemented later.
+
+        List<Edge> edges = edgeRepository.findAll();
+        Graph graph = createGraph(edges);
+
+        // Run Floyd Warshall
+        Map<Integer, Map<Integer, List<Integer>>> allPaths =
+                Algorithm.FloydWarshall.shortestPaths(graph);
+
+        List<Integer> nodePath = allPaths
+                .getOrDefault(sourceNodeId.intValue(), new HashMap<>())
+                .get(destinationNodeId.intValue());
+
+        if (nodePath == null || nodePath.size() < 2)
+            return new ArrayList<>();
+
+        List<Edge> edgesData = new ArrayList<>();
+
+        for (int i = 0; i < nodePath.size() - 1; i++) {
+
+            int u = nodePath.get(i);
+            int v = nodePath.get(i + 1);
+
+            Edge edge = edgeRepository
+                    .findBySourceNodeIdAndDestinationNodeId((long) u, (long) v)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Edge not found between " + u + " and " + v));
+
+            edgesData.add(edge);
+        }
+
+        return edgesData
+                .stream()
+                .map(e -> edgeService.toResponse(e, false))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
