@@ -83,7 +83,7 @@ public class EdgeService {
         return toResponse(edge, true);
     }
 
-    private EdgeResponse toResponse(Edge edge, boolean includeWaypoints) {
+    public EdgeResponse toResponse(Edge edge, boolean includeWaypoints) {
 
         List<PathWaypointDTO> waypoints = null;
         if (includeWaypoints) {
