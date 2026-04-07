@@ -24,7 +24,7 @@ public class NodeService {
         this.nodeRepository = nodeRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional()
     public NodeResponse createNode(NodeRequestDTO request) {
         Node parentNode = null;
 

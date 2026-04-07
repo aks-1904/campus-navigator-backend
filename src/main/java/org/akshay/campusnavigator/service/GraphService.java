@@ -41,7 +41,7 @@ public class GraphService {
         List<ResponseDTOs.EdgeResponse> edges = edgeRepository
                 .findAll()
                 .stream()
-                .map(e -> edgeService.toResponse(e, false))
+                .map(e -> edgeService.toResponse(e, true))
                 .collect(Collectors.toList());
 
         ResponseDTOs.GraphResponse graph = new ResponseDTOs.GraphResponse();
@@ -80,7 +80,7 @@ public class GraphService {
 
         return edgesData
                 .stream()
-                .map(e -> edgeService.toResponse(e, false))
+                .map(e -> edgeService.toResponse(e, true))
                 .collect(Collectors.toList());
     }
 
@@ -118,7 +118,7 @@ public class GraphService {
 
         return edgesData
                 .stream()
-                .map(e -> edgeService.toResponse(e, false))
+                .map(e -> edgeService.toResponse(e, true))
                 .collect(Collectors.toList());
     }
 
