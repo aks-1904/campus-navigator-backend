@@ -15,15 +15,17 @@ public class Graph {
         }
     }
 
-    public void addEdge(int source, int destination, int distance, boolean directed) {
-        AdjacencyListNode temp = adjacencyList.get(source);
+    public void addEdge(Long source, Long destination, Double distance, boolean directed) {
+        int sourceNodeId = Integer.parseInt(source.toString());
+        int destinationNodeId = Integer.parseInt(destination.toString());
+        AdjacencyListNode temp = adjacencyList.get(sourceNodeId);
         AdjacencyListNode node = new AdjacencyListNode(source, destination, distance, temp);
-        adjacencyList.set(source, node);
+        adjacencyList.set(sourceNodeId, node);
 
         if (!directed) {
-            temp = adjacencyList.get(destination);
+            temp = adjacencyList.get(destinationNodeId);
             node = new AdjacencyListNode(destination, source, distance, temp);
-            adjacencyList.set(destination, node);
+            adjacencyList.set(destinationNodeId, node);
         }
 
     }

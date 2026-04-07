@@ -135,8 +135,7 @@ public class NodeService {
         return toResponse(node, true);
     }
 
-    @Transactional(readOnly = true)
-    private NodeResponse toResponse(Node node, boolean includeChildren) {
+    public NodeResponse toResponse(Node node, boolean includeChildren) {
 
         List<NodeResponse> children = null;
         if (includeChildren && !node.getChildNodes().isEmpty()) {
