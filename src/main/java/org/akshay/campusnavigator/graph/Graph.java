@@ -11,7 +11,7 @@ public class Graph {
         this.adjacencyList = new ArrayList<>(vertices);
 
         for (int i = 0; i < vertices; ++i) {
-            this.adjacencyList.set(i, null);
+            this.adjacencyList.add(null);
         }
     }
 
