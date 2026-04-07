@@ -2,7 +2,6 @@ package org.akshay.campusnavigator.dto;
 
 import org.akshay.campusnavigator.enums.EdgeType;
 import org.akshay.campusnavigator.enums.NodeType;
-import org.akshay.campusnavigator.model.PathWaypoint;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -247,6 +246,27 @@ public class ResponseDTOs {
 
         public void setWaypoints(List<PathWaypointDTO> waypoints) {
             this.waypoints = waypoints;
+        }
+    }
+
+    public static class GraphResponse{
+        private List<NodeResponse> nodes;
+        private List<EdgeResponse> edges;
+
+        public void setNodes(List<NodeResponse> nodes) {
+            this.nodes = nodes;
+        }
+
+        public void setEdges(List<EdgeResponse> edges) {
+            this.edges = edges;
+        }
+
+        public List<NodeResponse> getNodes() {
+            return nodes;
+        }
+
+        public List<EdgeResponse> getEdges() {
+            return edges;
         }
     }
 
