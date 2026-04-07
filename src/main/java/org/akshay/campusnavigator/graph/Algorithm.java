@@ -57,7 +57,7 @@ public class Algorithm {
 
             Collections.reverse(path);
 
-            if(path.get(0) != source)
+            if (path.get(0) != source)
                 return new ArrayList<>(); // No path
 
             return path;
@@ -80,6 +80,59 @@ public class Algorithm {
     }
 
     public static class BFS {
+        public static List<Integer> shortestPath(Graph graph, int source, int destination) {
+            int V = graph.vertices;
 
+            boolean[] visited = new boolean[V];
+            int[] parent = new int[V];
+
+            Arrays.fill(parent, -1);
+
+            Queue<Integer> queue = new LinkedList<>();
+
+            visited[source] = true;
+            queue.add(source);
+
+            while (!queue.isEmpty()) {
+                int current = queue.poll();
+
+                if (current == destination)
+                    break;
+
+                AdjacencyListNode neighbour = graph.getNeighbours(current);
+
+                while (neighbour != null) {
+                    int v = neighbour.destinationNode.intValue();
+
+                    if (!visited[v]) {
+                        visited[v] = true;
+                        parent[v] = current;
+                        queue.add(v);
+                    }
+
+                    neighbour = neighbour.next;
+                }
+            }
+
+            return reconstructPath(parent, source, destination);
+        }
+
+        private static List<Integer> reconstructPath(int[] parent, int source, int destination) {
+
+            List<Integer> path = new ArrayList<>();
+
+            for (int v = destination; v != -1; v = parent[v]) {
+                path.add(v);
+            }
+
+            Collections.reverse(path);
+
+            if (path.get(0) != source) {
+                return new ArrayList<>();
+            }
+
+            return path;
+
+        }
     }
 }
