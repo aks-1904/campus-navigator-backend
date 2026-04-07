@@ -13,6 +13,7 @@ import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class EdgeService {
         this.edgeRepository = edgeRepository;
     }
 
+    @Transactional()
     public EdgeResponse createEdge(EdgeRequestDTO request) {
 
         Node source = nodeRepository
@@ -39,8 +41,23 @@ public class EdgeService {
                 .orElseThrow(() -> new IllegalArgumentException("Destination node not found: " + request.getDestinationNodeId()));
 
         List<PathWaypointDTO> coords = request.getWaypoints();
-        double[] lats = coords.stream().mapToDouble(PathWaypointDTO::getLatitude).toArray();
-        double[] longs = coords.stream().mapToDouble(PathWaypointDTO::getLongitude).toArray();
+
+        List<Double> latList = new ArrayList<>();
+        List<Double> lonList = new ArrayList<>();
+
+        latList.add(source.getLatitude());
+        lonList.add(source.getLongitude());
+
+        for (PathWaypointDTO p : coords) {
+            latList.add(p.getLatitude());
+            lonList.add(p.getLongitude());
+        }
+
+        latList.add(destination.getLatitude());
+        lonList.add(destination.getLongitude());
+
+        double[] lats = latList.stream().mapToDouble(Double::doubleValue).toArray();
+        double[] longs = lonList.stream().mapToDouble(Double::doubleValue).toArray();
         double distanceMeters = Haversin.totalPathDistance(lats, longs);
 
         log.info("Recording path: {} -> {} | {} coords | {:.2f}m", source.getName(), destination.getName(), coords.size(), distanceMeters);
@@ -55,7 +72,7 @@ public class EdgeService {
         edge.setDescription(request.getDescription());
 
         List<PathWaypoint> waypoints = new ArrayList<>();
-        for (int i = 1; i < coords.size(); ++i) {
+        for (int i = 0; i < coords.size(); ++i) {
             PathWaypointDTO p = coords.get(i);
             PathWaypoint wp = new PathWaypoint();
             wp.setEdge(edge);
@@ -83,6 +100,7 @@ public class EdgeService {
         return toResponse(edge, true);
     }
 
+    @Transactional(readOnly = true)
     public EdgeResponse toResponse(Edge edge, boolean includeWaypoints) {
 
         List<PathWaypointDTO> waypoints = null;
@@ -91,7 +109,7 @@ public class EdgeService {
                     .map(wp -> {
                         PathWaypointDTO p = new PathWaypointDTO();
                         p.setLatitude(wp.getLatitude());
-                        p.setLatitude(wp.getLongitude());
+                        p.setLongitude(wp.getLongitude());
                         p.setAltitude(wp.getAltitude());
 
                         return p;
