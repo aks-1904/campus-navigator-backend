@@ -57,8 +57,13 @@ public class GraphService {
         List<Edge> edges = edgeRepository.findAll();
         Graph graph = createGraph(edges);
 
-        List<Integer> nodePath =
-                Algorithm.Dijkstra.shortestPath(graph, sourceNodeId.intValue(), destinationNodeId.intValue());
+        List<Integer> nodePath = Algorithm
+                .Dijkstra
+                .shortestPath(
+                        graph,
+                        sourceNodeId.intValue(),
+                        destinationNodeId.intValue()
+                );
 
         if (nodePath.size() < 2)
             return new ArrayList<>();
