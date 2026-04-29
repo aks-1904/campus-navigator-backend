@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,6 +99,94 @@ public class EdgeService {
                 .orElseThrow(() -> new IllegalArgumentException("Edge not found " + id));
 
         return toResponse(edge, true);
+    }
+
+    @Transactional
+    public EdgeResponse updateEdge(Long id, EdgeRequestDTO edgeDTO) {
+        Edge edge = edgeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Edge not found with ID: " + id));
+
+        // 1. Update Source and Destination Nodes if provided
+        if (edgeDTO.getSourceNodeId() != null && !edgeDTO.getSourceNodeId().equals(edge.getSourceNode().getId())) {
+            Node sourceNode = nodeRepository.findById(edgeDTO.getSourceNodeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Source Node not found"));
+            edge.setSourceNode(sourceNode);
+        }
+
+        if (edgeDTO.getDestinationNodeId() != null && !edgeDTO.getDestinationNodeId().equals(edge.getDestinationNode().getId())) {
+            Node destNode = nodeRepository.findById(edgeDTO.getDestinationNodeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Destination Node not found"));
+            edge.setDestinationNode(destNode);
+        }
+
+        // 2. Update simple primitive fields
+        if (edgeDTO.getBidirectional() != null) edge.setBidirectional(edgeDTO.getBidirectional());
+        if (edgeDTO.getAccessible() != null) edge.setAccessible(edgeDTO.getAccessible());
+        if (edgeDTO.getActive() != null) edge.setActive(edgeDTO.getActive());
+        if (edgeDTO.getEdgeType() != null) edge.setEdgeType(edgeDTO.getEdgeType());
+        if (edgeDTO.getDescription() != null) edge.setDescription(edgeDTO.getDescription());
+
+        // 3. Update Waypoints (if provided)
+        if (edgeDTO.getWaypoints() != null) {
+            edge.getWaypoints().clear(); // Remove old waypoints
+
+            for (int i = 0; i < edgeDTO.getWaypoints().size(); ++i) {
+                PathWaypointDTO wpDto = edgeDTO.getWaypoints().get(i);
+                PathWaypoint wp = new PathWaypoint();
+                wp.setEdge(edge);
+                wp.setSequenceOrder(i);
+                wp.setLatitude(wpDto.getLatitude());
+                wp.setLongitude(wpDto.getLongitude());
+                wp.setAltitude(wpDto.getAltitude());
+                edge.getWaypoints().add(wp);
+            }
+        }
+
+        // 4. Recalculate Distance Dynamically
+        Node currentSource = edge.getSourceNode();
+        Node currentDest = edge.getDestinationNode();
+
+        List<Double> latList = new ArrayList<>();
+        List<Double> lonList = new ArrayList<>();
+
+        // Add source coordinates
+        latList.add(currentSource.getLatitude());
+        lonList.add(currentSource.getLongitude());
+
+        // Add waypoint coordinates
+        if (edgeDTO.getWaypoints() != null) {
+            // If new waypoints were provided in the DTO, use them
+            for (PathWaypointDTO p : edgeDTO.getWaypoints()) {
+                latList.add(p.getLatitude());
+                lonList.add(p.getLongitude());
+            }
+        } else {
+            // If waypoints weren't updated, use existing ones (ensure they are ordered)
+            List<PathWaypoint> currentWaypoints = new ArrayList<>(edge.getWaypoints());
+            currentWaypoints.sort(Comparator.comparingInt(PathWaypoint::getSequenceOrder));
+            for (PathWaypoint p : currentWaypoints) {
+                latList.add(p.getLatitude());
+                lonList.add(p.getLongitude());
+            }
+        }
+
+        // Add destination coordinates
+        latList.add(currentDest.getLatitude());
+        lonList.add(currentDest.getLongitude());
+
+        // Calculate distance via Haversin
+        double[] lats = latList.stream().mapToDouble(Double::doubleValue).toArray();
+        double[] longs = lonList.stream().mapToDouble(Double::doubleValue).toArray();
+        double distanceMeters = Haversin.totalPathDistance(lats, longs);
+
+        edge.setDistance(distanceMeters);
+
+        // 5. Save and return
+        Edge updatedEdge = edgeRepository.save(edge);
+
+        // Optional: log.info("Updated PathEdge id={} with recalculated distance {:.2f}m", updatedEdge.getId(), distanceMeters);
+
+        return toResponse(updatedEdge, true);
     }
 
     @Transactional(readOnly = true)

@@ -1,9 +1,11 @@
 package org.akshay.campusnavigator.service;
 
 import org.akshay.campusnavigator.dto.ResponseDTOs;
+import org.akshay.campusnavigator.enums.NodeType;
 import org.akshay.campusnavigator.graph.Algorithm;
 import org.akshay.campusnavigator.graph.Graph;
 import org.akshay.campusnavigator.model.Edge;
+import org.akshay.campusnavigator.model.Node;
 import org.akshay.campusnavigator.repository.EdgeRepository;
 import org.akshay.campusnavigator.repository.NodeRepository;
 import org.springframework.stereotype.Service;
@@ -53,38 +55,35 @@ public class GraphService {
 
     @Transactional(readOnly = true)
     public List<ResponseDTOs.EdgeResponse> getShortestPath(Long sourceNodeId, Long destinationNodeId) {
-
         List<Edge> edges = edgeRepository.findAll();
         Graph graph = createGraph(edges);
 
-        List<Integer> nodePath = Algorithm
-                .Dijkstra
-                .shortestPath(
-                        graph,
-                        sourceNodeId.intValue(),
-                        destinationNodeId.intValue()
-                );
+        List<Integer> shortestPath = Algorithm.Dijkstra.shortestPath(graph, sourceNodeId.intValue(), destinationNodeId.intValue());
 
-        if (nodePath.size() < 2)
-            return new ArrayList<>();
+        if (shortestPath.isEmpty()) {
+            return new ArrayList<>(); // Path does not exist
+        }
 
         List<Edge> edgesData = new ArrayList<>();
 
-        for (int i = 0; i < nodePath.size() - 1; i++) {
+        // Iterate through the nodes in pairs to find the connecting edges
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            Long currentNodeId = shortestPath.get(i).longValue();
+            Long nextNodeId = shortestPath.get(i + 1).longValue();
 
-            long u = nodePath.get(i);
-            long v = nodePath.get(i + 1);
+            // Find the edge that connects currentNodeId to nextNodeId
+            Edge connectingEdge = edges.stream()
+                    .filter(e ->
+                            (e.getSourceNode().getId().equals(currentNodeId) && e.getDestinationNode().getId().equals(nextNodeId)) ||
+                                    (e.getBidirectional() && e.getSourceNode().getId().equals(nextNodeId) && e.getDestinationNode().getId().equals(currentNodeId))
+                    )
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Edge missing between nodes " + currentNodeId + " and " + nextNodeId));
 
-            Edge edge = edgeRepository
-                    .findBySourceNodeIdAndDestinationNodeId(u, v)
-                    .orElseThrow(() ->
-                            new IllegalArgumentException("Edge not found between " + u + " and " + v));
-
-            edgesData.add(edge);
+            edgesData.add(connectingEdge);
         }
 
-        return edgesData
-                .stream()
+        return edgesData.stream()
                 .map(e -> edgeService.toResponse(e, true))
                 .collect(Collectors.toList());
     }

@@ -82,8 +82,8 @@ public class NodeService {
         List<Node> requiredNodes = new ArrayList<>();
         List<Node> nodes = nodeRepository.findAll();
 
-        for(Node node: nodes) {
-            if(node.getType().equals(type)) {
+        for (Node node : nodes) {
+            if (node.getType().equals(type)) {
                 requiredNodes.add(node);
             }
         }
@@ -111,10 +111,9 @@ public class NodeService {
     public NodeResponse updateNode(Long id, NodeRequestDTO updatedNodeData) {
         Node node = nodeRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Node not found for ID "+ id));
+                .orElseThrow(() -> new IllegalArgumentException("Node not found for ID " + id));
         Node parent = null;
-        if(updatedNodeData.getParentNodeId() != null)
-        {
+        if (updatedNodeData.getParentNodeId() != null) {
             parent = nodeRepository
                     .findById(updatedNodeData.getParentNodeId())
                     .orElseThrow(() -> new IllegalArgumentException("Node not found for ID " + updatedNodeData.getParentNodeId()));
@@ -133,6 +132,15 @@ public class NodeService {
         nodeRepository.save(node);
 
         return toResponse(node, true);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NodeResponse> searchNodes(String query) {
+        List<Node> nodes = nodeRepository.findByNameContainingIgnoreCase(query);
+
+        return nodes.stream()
+                .map(n -> toResponse(n, false))
+                .collect(Collectors.toList());
     }
 
     public NodeResponse toResponse(Node node, boolean includeChildren) {
