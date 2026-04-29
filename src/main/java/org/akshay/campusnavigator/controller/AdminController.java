@@ -146,4 +146,17 @@ public class AdminController {
         );
     }
 
+    @PutMapping("/edge/{id}")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    ResponseDTOs.EdgeResponse
+                    >
+            > updateEdge(@PathVariable Long id, @RequestBody EdgeRequestDTO edge) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        "Edge updated successfully", edgeService.updateEdge(id, edge) // Ensure this method exists in EdgeService
+                )
+        );
+    }
+
 }
