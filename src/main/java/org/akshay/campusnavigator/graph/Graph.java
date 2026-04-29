@@ -22,7 +22,7 @@ public class Graph {
         AdjacencyListNode node = new AdjacencyListNode(source, destination, distance, temp);
         adjacencyList.set(sourceNodeId, node);
 
-        if (!directed) {
+        if (directed) {
             temp = adjacencyList.get(destinationNodeId);
             node = new AdjacencyListNode(destination, source, distance, temp);
             adjacencyList.set(destinationNodeId, node);

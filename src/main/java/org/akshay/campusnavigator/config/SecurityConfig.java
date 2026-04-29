@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/user/**").permitAll()
                         .requestMatchers("/api/v1/admin/ping").permitAll()
-                        .requestMatchers("/api/v1/admin/**").authenticated()
+                        .requestMatchers("/api/v1/admin/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(new RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class)

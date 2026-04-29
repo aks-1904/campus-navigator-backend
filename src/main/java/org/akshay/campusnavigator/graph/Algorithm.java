@@ -7,28 +7,28 @@ public class Algorithm {
     public static class Dijkstra {
 
         public static List<Integer> shortestPath(Graph graph, int source, int destination) {
-            int V = graph.vertices;
-            double[] dist = new double[V];
-            int[] parent = new int[V];
-            boolean[] visited = new boolean[V];
-
-            Arrays.fill(dist, Double.MAX_VALUE);
-            Arrays.fill(parent, -1);
+            // Use Maps to safely handle non-sequential Database IDs
+            Map<Integer, Double> dist = new HashMap<>();
+            Map<Integer, Integer> parent = new HashMap<>();
+            Set<Integer> visited = new HashSet<>();
 
             PriorityQueue<NodeDistance> pq = new PriorityQueue<>(
                     Comparator.comparingDouble(n -> n.distance)
             );
-            dist[source] = 0;
 
-            pq.add(new NodeDistance(source, 0));
+            dist.put(source, 0.0);
+            parent.put(source, -1);
+            pq.add(new NodeDistance(source, 0.0));
 
             while (!pq.isEmpty()) {
                 NodeDistance current = pq.poll();
                 int u = current.node;
 
-                if (visited[u])
-                    continue;
-                visited[u] = true;
+                if (visited.contains(u)) continue;
+                visited.add(u);
+
+                // Early exit optimization: stop searching once we reach the destination
+                if (u == destination) break;
 
                 AdjacencyListNode neighbour = graph.getNeighbours(u);
 
@@ -36,11 +36,14 @@ public class Algorithm {
                     int v = neighbour.destinationNode.intValue();
                     double weight = neighbour.distance;
 
-                    if (!visited[v] && dist[u] + weight < dist[v]) {
-                        dist[v] = dist[u] + weight;
-                        parent[v] = u;
+                    double currentDistU = dist.getOrDefault(u, Double.MAX_VALUE);
+                    double currentDistV = dist.getOrDefault(v, Double.MAX_VALUE);
 
-                        pq.add(new NodeDistance(v, dist[v]));
+                    if (!visited.contains(v) && currentDistU + weight < currentDistV) {
+                        dist.put(v, currentDistU + weight);
+                        parent.put(v, u);
+
+                        pq.add(new NodeDistance(v, dist.get(v)));
                     }
                     neighbour = neighbour.next;
                 }
@@ -49,19 +52,25 @@ public class Algorithm {
             return reconstructPath(parent, source, destination);
         }
 
-        private static List<Integer> reconstructPath(int[] parent, int source, int destination) {
+        private static List<Integer> reconstructPath(Map<Integer, Integer> parent, int source, int destination) {
             List<Integer> path = new ArrayList<>();
+            Integer current = destination;
 
-            for (int v = destination; v != -1; v = parent[v])
-                path.add(v);
+            // Trace back from destination to source
+            while (current != null && current != -1) {
+                path.add(current);
+                if (current == source) break;
+                current = parent.get(current);
+            }
 
             Collections.reverse(path);
 
-            if (path.get(0) != source)
-                return new ArrayList<>(); // No path
+            // If the path is empty or doesn't start with the source, no valid path exists
+            if (path.isEmpty() || path.get(0) != source) {
+                return new ArrayList<>();
+            }
 
             return path;
-
         }
 
         private static class NodeDistance {
