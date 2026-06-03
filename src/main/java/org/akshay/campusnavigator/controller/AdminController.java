@@ -42,6 +42,19 @@ public class AdminController {
         );
     }
 
+    @PostMapping("/all/node")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    ResponseDTOs.NodeResponse[]
+                    >
+            > createAllNode(@RequestBody NodeRequestDTO[] nodes){
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        "Nodes created successfully", nodeService.createAllNode(nodes)
+                )
+        );
+    }
+
     @GetMapping("/node")
     public ResponseEntity<
             ResponseDTOs.ApiResponse<
@@ -116,6 +129,19 @@ public class AdminController {
         return ResponseEntity.ok(
                 ResponseDTOs.ApiResponse.ok(
                         "Edge created successfully", edgeService.createEdge(edge)
+                )
+        );
+    }
+
+    @PostMapping("/all/edge")
+    public ResponseEntity<
+            ResponseDTOs.ApiResponse<
+                    ResponseDTOs.EdgeResponse[]
+                    >
+            > createAllEdge(@RequestBody EdgeRequestDTO[] edges) {
+        return ResponseEntity.ok(
+                ResponseDTOs.ApiResponse.ok(
+                        "All Edge created successfully", edgeService.createAllEdge(edges)
                 )
         );
     }
