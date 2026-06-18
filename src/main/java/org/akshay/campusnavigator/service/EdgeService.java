@@ -93,6 +93,19 @@ public class EdgeService {
 
     }
 
+    public EdgeResponse[] createAllEdge(EdgeRequestDTO[] edges) {
+
+        int l=edges.length;
+        EdgeResponse[] edgeData=new EdgeResponse[l];
+
+        for(int i = 0; i < l; ++i)
+        {
+            edgeData[i]=createEdge(edges[i]);
+        }
+
+        return edgeData;
+    }
+
     public EdgeResponse getEdgeById(Long id) {
         Edge edge = edgeRepository
                 .findById(id)
@@ -238,4 +251,6 @@ public class EdgeService {
 
         return edgesData;
     }
+
+
 }

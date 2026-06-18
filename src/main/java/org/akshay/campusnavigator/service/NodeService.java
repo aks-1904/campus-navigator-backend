@@ -54,6 +54,18 @@ public class NodeService {
         return toResponse(node, true);
     }
 
+    public NodeResponse[] createAllNode(NodeRequestDTO[] nodes){
+
+        int l = nodes.length;
+        NodeResponse[] nodesData=new NodeResponse[l];
+        for(int i = 0; i < l; ++i)
+        {
+            nodesData[i] = createNode(nodes[i]);
+        }
+
+        return nodesData;
+    }
+
     @Transactional(readOnly = true)
     public NodeResponse getNodeById(Long id) {
         Node node = nodeRepository
@@ -107,7 +119,7 @@ public class NodeService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public NodeResponse updateNode(Long id, NodeRequestDTO updatedNodeData) {
         Node node = nodeRepository
                 .findById(id)
@@ -131,7 +143,7 @@ public class NodeService {
 
         nodeRepository.save(node);
 
-        return toResponse(node, true);
+        return toResponse(node, false);
     }
 
     @Transactional(readOnly = true)
