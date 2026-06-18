@@ -186,32 +186,6 @@ public class Algorithm {
         }
     }
 
-    public static List<Integer> reconstructPath(int source, int destination, Result result) {
-        if (result.next[source][destination] == -1) {
-            return new ArrayList<>();
-        }
-
-        List<Integer> path = new ArrayList<>();
-        path.add(source);
-
-        while (source != destination) {
-            source = result.next[source][destination];
-            path.add(source);
-        }
-
-        return path;
-    }
-
-    public static class Result {
-        public double[][] dist;
-        public int[][] next;
-
-        public Result(double[][] dist, int[][] next) {
-            this.dist = dist;
-            this.next = next;
-        }
-    }
-
     public static class BFS {
         public static List<Integer> shortestPath(Graph graph, int source, int destination) {
             int V = graph.vertices;

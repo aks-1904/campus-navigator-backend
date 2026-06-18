@@ -107,7 +107,7 @@ public class NodeService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public NodeResponse updateNode(Long id, NodeRequestDTO updatedNodeData) {
         Node node = nodeRepository
                 .findById(id)
@@ -131,7 +131,7 @@ public class NodeService {
 
         nodeRepository.save(node);
 
-        return toResponse(node, true);
+        return toResponse(node, false);
     }
 
     @Transactional(readOnly = true)
